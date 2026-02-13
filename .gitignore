@@ -1,11 +1,87 @@
+# VoiceSnap .gitignore
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
 venv/
 env/
 ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# User data (should stay private)
+data/
+*.db
+*.db-journal
+
+# Audio cache
+audio_cache/
 *.wav
 *.mp3
+*.m4a
+
+# Configuration (personal settings)
+# Note: config.json template is included, but user configs are ignored
+# ~/.voicesnap/ is the actual config location
+
+# Whisper model cache (large files)
+.cache/
+whisper_models/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+*.spec
+*.exe
+*.app
+*.dmg
+*.pkg
