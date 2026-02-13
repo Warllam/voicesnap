@@ -1,0 +1,92 @@
+VoiceSnap v2.0.0 - Project Structure
+=====================================
+
+voicesnap/
+│
+├── 🎤 Core Application
+│   ├── voicesnap_v2.py          ⭐ Main application entry point (v2)
+│   ├── voicesnap.py             📦 Legacy CLI version (v1)
+│   └── run.sh                   🚀 Quick start script
+│
+├── 📚 Source Code (src/)
+│   ├── __init__.py
+│   ├── config.py                ⚙️  Configuration management
+│   ├── database.py              💾 SQLite transcription history
+│   │
+│   ├── core/                    🔧 Business Logic
+│   │   ├── __init__.py
+│   │   ├── recorder.py          🎙️  Audio recording + waveform
+│   │   ├── transcriber.py       🤖 Whisper transcription
+│   │   └── hotkey_manager.py    ⌨️  Global hotkey handling
+│   │
+│   └── ui/                      🎨 User Interface
+│       ├── __init__.py
+│       ├── main_window.py       🖥️  Main GUI (CustomTkinter)
+│       ├── overlay.py           📊 Recording overlay + visualization
+│       └── system_tray.py       🔔 System tray icon
+│
+├── 📖 Documentation
+│   ├── README.md                📘 Main documentation (comprehensive)
+│   ├── QUICKSTART.md            🚀 5-minute start guide
+│   ├── CHANGELOG.md             📝 Version history
+│   ├── BUILD.md                 🔨 Build executables guide
+│   └── DEVELOPMENT_SUMMARY.md   📊 Dev process summary
+│
+├── 🎨 Assets
+│   ├── assets/
+│   │   ├── icon.png             🎭 Application icon
+│   │   └── create_icon.py       🖌️  Icon generator script
+│   │
+│   └── .gitignore               🚫 Git ignore rules
+│
+├── 📦 Dependencies
+│   ├── requirements.txt         📋 v1 dependencies
+│   ├── requirements_v2.txt      📋 v2 dependencies (main)
+│   └── test_install.py          ✅ Dependency verification
+│
+└── 🗂️ User Data (runtime, not in repo)
+    └── ~/.voicesnap/
+        ├── config.json          ⚙️  User settings
+        ├── data/
+        │   └── transcriptions.db 💾 History database
+        └── audio_cache/         🎵 Saved recordings
+
+Statistics
+==========
+Source Files:     13 Python files
+Documentation:    5 Markdown files
+Total Code:       ~2,775 lines (core)
+Total Project:    ~4,500 lines (with docs/tests)
+License:          MIT
+Version:          2.0.0
+Status:           ✅ Production Ready
+
+Key Features
+============
+✨ Global hotkey (Ctrl+Space)
+📊 Real-time waveform overlay
+🤖 Whisper AI transcription (100% local)
+📚 Searchable history (SQLite FTS5)
+🔔 System tray integration
+⚙️  Full settings UI
+🌍 99+ languages supported
+🔒 100% private (no cloud)
+🖥️  Cross-platform (Win/Mac/Linux)
+
+Technology Stack
+================
+Framework:     CustomTkinter (UI)
+AI:            OpenAI Whisper
+Audio:         sounddevice + soundfile
+Hotkeys:       pynput
+Database:      SQLite3
+Icons:         pystray + PIL
+Platform:      Python 3.8+
+
+Ready to Use!
+=============
+Install:  pip install -r requirements_v2.txt
+Run:      python3 voicesnap_v2.py
+Test:     python3 test_install.py
+Docs:     See QUICKSTART.md
+
