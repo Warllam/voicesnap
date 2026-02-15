@@ -160,37 +160,69 @@ class AudioRecorder:
     
     @staticmethod
     def list_devices() -> List[dict]:
-        """List available audio input devices
+        """List available audio input devices (real microphones only)
         
         Returns:
             List of device dictionaries with 'index', 'name', 'channels'
         """
         devices = []
         
-        # Keywords to filter out (output devices, loopback, etc.)
+        # Keywords to filter out (virtual devices, outputs, loopback, etc.)
         excluded_keywords = [
-            'output', 'speaker', 'headphone', 'loopback', 'stereo mix',
-            'wave out', 'mapping', 'what u hear', 'realtek digital output'
+            # Output devices
+            'output', 'speaker', 'headphone', 'headset output',
+            # Loopback/monitoring
+            'loopback', 'stereo mix', 'wave out', 'what u hear', 'monitor',
+            # Virtual/mapping devices
+            'mapping', 'mapper', 'virtual', 'cable', 'voicemeeter',
+            # Digital outputs
+            'digital output', 'spdif', 's/pdif', 'optical',
+            # Line/aux outputs
+            'line out', 'aux out', 'rear output', 'front output',
+            # Misc exclusions
+            'playback', 'render', 'communications'
         ]
         
+        # Prioritize real microphones
+        microphone_keywords = ['microphone', 'mic', 'webcam', 'usb', 'camera']
+        
         for i, device in enumerate(sd.query_devices()):
-            if device['max_input_channels'] > 0:
-                device_name_lower = device['name'].lower()
-                
-                # Skip if it's likely an output device
-                if any(keyword in device_name_lower for keyword in excluded_keywords):
-                    continue
-                
-                # Skip if it has only output channels
-                if device['max_output_channels'] > 0 and device['max_input_channels'] == 0:
-                    continue
-                
+            # Must have input channels
+            if device['max_input_channels'] <= 0:
+                continue
+            
+            device_name = device['name']
+            device_name_lower = device_name.lower()
+            
+            # Skip excluded devices
+            if any(keyword in device_name_lower for keyword in excluded_keywords):
+                continue
+            
+            # Skip devices with many output channels (likely mixers/virtual devices)
+            if device['max_output_channels'] > 2:
+                continue
+            
+            # Calculate priority (real mics get higher score)
+            priority = 0
+            if any(keyword in device_name_lower for keyword in microphone_keywords):
+                priority = 10
+            
+            # Add only if it looks like a real input device
+            if priority > 0 or (device['max_input_channels'] <= 2 and device['max_output_channels'] == 0):
                 devices.append({
                     'index': i,
-                    'name': device['name'],
+                    'name': device_name,
                     'channels': device['max_input_channels'],
-                    'sample_rate': device['default_samplerate']
+                    'sample_rate': device['default_samplerate'],
+                    'priority': priority
                 })
+        
+        # Sort by priority (real mics first), then by name
+        devices.sort(key=lambda d: (-d['priority'], d['name']))
+        
+        # Remove priority field from output
+        for device in devices:
+            device.pop('priority', None)
         
         return devices
     
