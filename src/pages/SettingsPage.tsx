@@ -156,7 +156,7 @@ export default function SettingsPage() {
             <FormField label="Language">
               <select
                 value={formData.language ?? ''}
-                onChange={(e) => setFormData({ ...formData, language: e.target.value || null })}
+                onChange={(e) => setFormData({ ...formData, language: e.target.value === '' ? 'fr' : e.target.value })}
                 className="w-full px-4 py-2 bg-surface-elevated border border-border rounded-lg text-text focus:outline-none focus:border-accent transition-colors"
               >
                 <option value="">Auto-detect</option>

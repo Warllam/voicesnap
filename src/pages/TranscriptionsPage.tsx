@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Search, Trash2, AlertCircle } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { api } from '@/lib/api';
