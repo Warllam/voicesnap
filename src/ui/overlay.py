@@ -109,13 +109,16 @@ class RecordingOverlay:
             if audio_data.ndim > 1:
                 audio_data = audio_data.flatten()
             
-            # Downsample for visualization
-            target_samples = 500
-            if len(audio_data) > target_samples:
-                step = len(audio_data) // target_samples
-                audio_data = audio_data[::step]
-            
-            self.waveform_data = audio_data
+            # Keep last N samples for rolling display
+            max_samples = 2000
+            if len(self.waveform_data) > 0:
+                # Append new data
+                self.waveform_data = np.concatenate([self.waveform_data, audio_data])
+                # Keep only recent samples
+                if len(self.waveform_data) > max_samples:
+                    self.waveform_data = self.waveform_data[-max_samples:]
+            else:
+                self.waveform_data = audio_data
     
     def update_duration(self, duration: float):
         """Update recording duration

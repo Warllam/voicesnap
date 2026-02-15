@@ -96,19 +96,21 @@ class HotkeyManager:
         if self.listener is not None:
             return
         
+        # Track if we already triggered on this press combo
+        self._triggered_this_press = False
+        
         def on_press(key):
             """Handle key press"""
             self.current_keys.add(key)
             
             # Check if hotkey combo is pressed
-            if self._is_hotkey_pressed():
+            if self._is_hotkey_pressed() and not self._triggered_this_press:
+                self._triggered_this_press = True
                 with self._lock:
                     if self.toggle_mode:
-                        # Toggle mode: switch state
-                        if not self.is_active:
-                            self.is_active = True
-                            if self.on_activate:
-                                threading.Thread(target=self.on_activate, daemon=True).start()
+                        # Toggle mode: always call on_activate (it handles toggle logic)
+                        if self.on_activate:
+                            threading.Thread(target=self.on_activate, daemon=True).start()
                     else:
                         # Push-to-talk mode: activate when pressed
                         if not self.is_active:
@@ -121,17 +123,13 @@ class HotkeyManager:
             if key in self.current_keys:
                 self.current_keys.discard(key)
             
+            # Reset trigger flag when all hotkey keys are released
+            if not self._is_hotkey_pressed():
+                self._triggered_this_press = False
+            
             # In push-to-talk mode, deactivate when keys are released
             if not self.toggle_mode and self.is_active:
                 if not self._is_hotkey_pressed():
-                    with self._lock:
-                        self.is_active = False
-                        if self.on_deactivate:
-                            threading.Thread(target=self.on_deactivate, daemon=True).start()
-            
-            # In toggle mode, second press deactivates
-            elif self.toggle_mode and self.is_active:
-                if self._is_hotkey_pressed():
                     with self._lock:
                         self.is_active = False
                         if self.on_deactivate:

@@ -167,8 +167,24 @@ class AudioRecorder:
         """
         devices = []
         
+        # Keywords to filter out (output devices, loopback, etc.)
+        excluded_keywords = [
+            'output', 'speaker', 'headphone', 'loopback', 'stereo mix',
+            'wave out', 'mapping', 'what u hear', 'realtek digital output'
+        ]
+        
         for i, device in enumerate(sd.query_devices()):
             if device['max_input_channels'] > 0:
+                device_name_lower = device['name'].lower()
+                
+                # Skip if it's likely an output device
+                if any(keyword in device_name_lower for keyword in excluded_keywords):
+                    continue
+                
+                # Skip if it has only output channels
+                if device['max_output_channels'] > 0 and device['max_input_channels'] == 0:
+                    continue
+                
                 devices.append({
                     'index': i,
                     'name': device['name'],
