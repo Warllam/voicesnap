@@ -1,0 +1,8 @@
+flask>=3.0.0
+flask-cors>=4.0.0
+openai-whisper>=20231117
+numpy>=1.24.0
+sounddevice>=0.4.6
+soundfile>=0.12.1
+pyperclip>=1.8.2
+pynput>=1.7.6

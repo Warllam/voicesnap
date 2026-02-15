@@ -1,264 +1,177 @@
-# VoiceSnap v2 - Quick Start Guide
+# 🚀 VoiceSnap Tauri - Quick Start
 
-Get up and running with VoiceSnap in 5 minutes!
+## Installation rapide (5 minutes)
 
-## 🎯 What is VoiceSnap?
-
-VoiceSnap is a **local voice-to-text transcription app** that works 100% offline. No cloud, no API keys, no subscriptions. Just press a hotkey, speak, and your words appear as text.
-
-Think of it as a free, open-source alternative to SuperWhisper.
-
-## 🚀 Installation (3 Steps)
-
-### Step 1: Install Prerequisites
-
-**ffmpeg** (required for audio processing):
+### 1. Prérequis
 
 ```bash
-# macOS
-brew install ffmpeg
+# Installer FFmpeg (nécessaire pour Whisper)
+sudo apt install ffmpeg python3-pip
 
-# Linux (Ubuntu/Debian)
-sudo apt update && sudo apt install ffmpeg
-
-# Windows
-choco install ffmpeg
-# or download from https://ffmpeg.org/download.html
+# Vérifier les installations
+python3 --version  # Doit être 3.11+
+node --version     # Doit être 18+
+cargo --version    # Rust/Cargo
 ```
 
-**Python 3.8+** (check if you have it):
-```bash
-python3 --version
-```
-
-### Step 2: Clone & Install
+### 2. Setup Python
 
 ```bash
-# Clone repository
-git clone https://github.com/Warllam/voicesnap.git
-cd voicesnap
-
-# Install Python dependencies
-pip install -r requirements_v2.txt
-
-# Wait a few minutes for PyTorch, Whisper, etc. to install
+cd python
+pip install -r requirements.txt
 ```
 
-### Step 3: Run VoiceSnap
+Première installation : Whisper téléchargera automatiquement le modèle (~150 MB pour 'base')
 
+### 3. Lancer l'application
+
+**Option A : Script automatique** (recommandé)
 ```bash
-# Quick start script
-./run.sh
-
-# Or directly
-python3 voicesnap_v2.py
+./start.sh
 ```
 
-**First launch**: Whisper will download the model (~150MB). This happens once.
+**Option B : Manuel (2 terminaux)**
 
-## 🎤 Usage
-
-### Basic Workflow
-
-1. **Launch VoiceSnap**
-   - The main window appears
-   - Wait for "Model loaded" in status bar
-   - You can minimize to tray
-
-2. **Press Hotkey** (default: `Ctrl+Space`)
-   - Recording overlay appears at top of screen
-   - See waveform animation and timer
-   - Speak clearly into your microphone
-
-3. **Press Hotkey Again** to stop
-   - Overlay disappears
-   - Transcription happens (a few seconds)
-   - Text is auto-pasted where you were typing!
-
-4. **View History**
-   - All transcriptions saved in History tab
-   - Search, copy, or re-paste old transcriptions
-
-### Tips for Best Results
-
-✅ **DO:**
-- Speak clearly and at normal pace
-- Use a decent microphone (built-in is fine)
-- Keep recordings under 30 seconds for fast results
-- Check your language setting matches what you're speaking
-
-❌ **DON'T:**
-- Speak too fast or mumble
-- Record in very noisy environments
-- Expect perfect transcription (it's AI, not magic)
-- Use for real-time conversations (latency is 3-10s)
-
-## ⚙️ Settings
-
-### Change Whisper Model
-
-**Settings Tab → Model**
-
-- `tiny` - ⚡ Super fast, lower accuracy (casual notes)
-- `base` - ⚡ Fast, good accuracy (default, recommended)
-- `small` - Medium speed, better accuracy
-- `medium` - Slower, high accuracy
-- `large` - Very slow, best accuracy (professional use)
-
-First time switching downloads the new model.
-
-### Change Language
-
-**Settings Tab → Language**
-
-Select your language or use "Auto-detect". Supports:
-- French, English, Spanish, German, Italian, Portuguese
-- Japanese, Chinese, Korean, Russian, Arabic, Turkish
-- And 80+ more languages!
-
-### Change Hotkey
-
-**Current:** Edit `~/.voicesnap/config.json` manually:
-
-```json
-{
-  "hotkey": {
-    "modifiers": ["ctrl", "shift"],
-    "key": "space",
-    "toggle_mode": true
-  }
-}
+Terminal 1 - Backend Python :
+```bash
+cd python
+python server.py
 ```
 
-**Coming soon:** Interactive hotkey capture in Settings UI.
-
-### Disable Auto-Paste
-
-**Settings Tab → Behavior**
-
-Uncheck "Auto-paste transcription into active window"
-
-Transcription will only copy to clipboard. You manually paste with Ctrl+V.
-
-## 🗂️ Where Are My Files?
-
-### Configuration & Data
-
-All files stored in: `~/.voicesnap/`
-
-```
-~/.voicesnap/
-├── config.json              # Your settings
-├── data/
-│   └── transcriptions.db    # History database
-└── audio_cache/             # Saved recordings (if enabled)
+Terminal 2 - Frontend Tauri :
+```bash
+npm run tauri:dev
 ```
 
-### Whisper Models
+### 4. Utilisation
 
-Cached by Whisper itself: `~/.cache/whisper/`
-
-## 🔧 Troubleshooting
-
-### "Model not loading" / Stuck on startup
-
-**Solution:**
-- Check internet connection (first run only)
-- Try smaller model (Settings → Model → tiny)
-- Delete `~/.cache/whisper/` and restart (re-downloads model)
-
-### "No microphone found"
-
-**Solution:**
-- Check system microphone permissions
-- **macOS:** System Preferences → Security → Privacy → Microphone → Add Python/VoiceSnap
-- **Linux:** Check `arecord -l` shows your mic
-- Try different microphone in Settings tab
-
-### "Hotkey doesn't work"
-
-**Solution:**
-- Check another app isn't using the same hotkey
-- Try different hotkey combination
-- **macOS:** Grant Accessibility permissions (System Preferences → Security → Accessibility)
-- **Linux:** Some DEs block global hotkeys (try running with sudo or use custom hotkey)
-
-### "Auto-paste doesn't work"
-
-**Solution:**
-- On **macOS:** Grant Accessibility permissions
-- On **Linux:** Install `xdotool` if needed
-- Text is always copied to clipboard - you can manually paste with Ctrl+V
-- Disable auto-paste in Settings if it's problematic
-
-### "Transcription is wrong/bad"
-
-**Solutions:**
-- Try larger model (Settings → Model → small or medium)
-- Check language setting matches what you spoke
-- Speak more clearly and slowly
-- Reduce background noise
-- Try recording shorter clips
-- Some accents/dialects may work better than others
-
-### "App crashes"
-
-**Solution:**
-1. Run from terminal to see error:
-   ```bash
-   python3 voicesnap_v2.py
-   ```
-2. Check all dependencies installed:
-   ```bash
-   python3 test_install.py
-   ```
-3. Report issue on GitHub with error message
-
-## 📊 Performance
-
-### Model Comparison (approximate)
-
-| Model | Download Size | Memory Usage | CPU Time (10s audio) |
-|-------|---------------|--------------|----------------------|
-| tiny  | 75 MB         | ~1 GB RAM    | ~2 seconds           |
-| base  | 150 MB        | ~1 GB RAM    | ~3 seconds           |
-| small | 500 MB        | ~2 GB RAM    | ~10 seconds          |
-| medium| 1.5 GB        | ~5 GB RAM    | ~30 seconds          |
-| large | 3 GB          | ~10 GB RAM   | ~60 seconds          |
-
-*Times vary by CPU. GPU not required but speeds things up if available.*
-
-### Disk Space
-
-- App + dependencies: ~1-2 GB
-- Whisper models: 75 MB - 3 GB (depending on model)
-- History database: Grows over time (~1 MB per 1000 transcriptions)
-
-## 🎓 Next Steps
-
-### Customize Your Experience
-
-- Experiment with different models
-- Try different languages
-- Set custom hotkey
-- Explore history search
-
-### Advanced
-
-- Read [BUILD.md](BUILD.md) to create standalone executables
-- Check `~/.voicesnap/config.json` for all settings
-- Contribute to the project on GitHub
-
-### Get Help
-
-- 📖 [Full README](README.md)
-- 🐛 [Report bugs](https://github.com/Warllam/voicesnap/issues)
-- 💬 [Discussions](https://github.com/Warllam/voicesnap/discussions)
-
-## 🎉 You're Ready!
-
-Press `Ctrl+Space`, speak, and watch your words appear. Enjoy! 🎤✨
+1. **Lancer l'enregistrement** : `Ctrl+Space`
+2. **Parler** dans le micro
+3. **Arrêter** : `Ctrl+Space` à nouveau
+4. **Résultat** : Transcription automatique + copie dans le presse-papier !
 
 ---
 
-**Questions?** Check the [full README](README.md) or open an issue on GitHub.
+## 🎨 Interface
+
+### Navigation Sidebar (gauche)
+- 🏠 **Transcriptions** : Historique complet
+- ⚙️ **Settings** : Configuration
+- ℹ️ **About** : À propos
+
+### Recording Overlay (top center)
+Quand tu enregistres :
+- Waveform en temps réel
+- Timer
+- Bouton Stop
+
+### Transcription Cards
+- Design moderne avec hover effects
+- Actions : Copier / Supprimer
+- Métadonnées : date, durée, langue
+
+---
+
+## ⚙️ Configuration (Settings page)
+
+### Audio
+- Choisis ton micro
+- Plusieurs devices supportés
+
+### Transcription
+- **Modèle Whisper** :
+  - `tiny` : Ultra rapide, précision correcte
+  - `base` : ✨ **Recommandé** - Bon équilibre
+  - `small` : Meilleure précision
+  - `medium`/`large` : Précision maximale (lent, GPU recommandé)
+
+- **Langue** :
+  - Auto-detect (par défaut)
+  - Français, Anglais, Espagnol, etc. (99+ langues)
+
+### Behavior
+- **Auto-paste** : Colle automatiquement après transcription
+- **Hotkey** : `Ctrl+Space` (global, marche même app en arrière-plan)
+
+---
+
+## 📁 Fichiers importants
+
+```
+~/.voicesnap/
+├── config.json           # Configuration
+├── data/
+│   └── transcriptions.db # Base de données SQLite
+└── audio_cache/          # Fichiers audio (optionnel)
+```
+
+---
+
+## 🐛 Problèmes courants
+
+### "Server Not Connected"
+→ Vérifie que le backend Python tourne : `python python/server.py`
+→ Port 8765 doit être libre : `lsof -i :8765`
+
+### "Whisper model not loaded yet"
+→ Premier lancement : attends ~30s (téléchargement du modèle)
+→ Modèles stockés dans `~/.cache/whisper/`
+
+### Pas d'audio capturé
+→ Vérifie les permissions du micro
+→ Teste dans Settings > Audio Settings
+→ Essaie un autre device
+
+### Build Tauri échoue
+```bash
+# Linux: installer les dépendances système
+sudo apt install libwebkit2gtk-4.1-dev \
+  libappindicator3-dev librsvg2-dev patchelf
+
+# Clear cache
+rm -rf node_modules src-tauri/target
+npm install
+```
+
+---
+
+## 🚀 Build Production
+
+```bash
+npm run tauri:build
+```
+
+Créé :
+- **Linux** : `.deb` + `.AppImage`
+- **Windows** : `.exe` + `.msi`
+- **macOS** : `.dmg` + `.app`
+
+Dans `src-tauri/target/release/bundle/`
+
+---
+
+## 💡 Tips
+
+1. **Premier lancement** : Le modèle Whisper se télécharge automatiquement
+2. **Performance** : Utilise `base` pour l'usage quotidien, `small` si tu as un GPU
+3. **Raccourci global** : `Ctrl+Space` marche même dans d'autres apps !
+4. **Recherche** : Barre de recherche dans la page Transcriptions
+5. **Copie rapide** : Hover sur une card → bouton copier
+
+---
+
+## 🎯 Workflow typique
+
+```
+1. Travail dans n'importe quelle app
+2. Ctrl+Space → Commence à parler
+3. Ctrl+Space → Stop
+4. ✨ Texte transcrit copié automatiquement
+5. Ctrl+V pour coller où tu veux !
+```
+
+---
+
+**Enjoy! 🎉**
+
+Feedback / Issues : https://github.com/Warllam/voicesnap/issues
