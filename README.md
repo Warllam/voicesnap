@@ -1,304 +1,207 @@
-# VoiceSnap 🎤
+# VoiceSnap
 
-> **Local voice-to-text transcription** - Your private SuperWhisper alternative
+> Modern voice-to-text transcription with OpenAI Whisper
 
-Transform your voice into text instantly with OpenAI Whisper, 100% local, no cloud, no API keys.
+Local, private, and professional desktop application for speech-to-text transcription.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/Warllam/voicesnap/releases)
+[![Tauri](https://img.shields.io/badge/Tauri-2.x-blue.svg)](https://tauri.app/)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
 
-![VoiceSnap Screenshot](assets/screenshot.png)
+## Version 3.0 - Tauri Edition
 
-## ✨ Features
+Complete rebuild with modern web technologies for a native desktop experience.
 
-### 🎯 Core Features
-- 🔒 **100% Local** - All processing happens on your machine, zero cloud dependency
-- ⚡ **Global Hotkey** - Ctrl+Space to start/stop recording from anywhere
-- 📊 **Live Waveform** - Real-time audio visualization during recording
-- 🤖 **AI Transcription** - Powered by OpenAI Whisper (state-of-the-art accuracy)
-- 📋 **Auto-Paste** - Transcription automatically inserted where you're typing
-- 🌍 **Multi-Language** - Supports 99+ languages (French, English, Spanish, etc.)
+### Features
 
-### 🎨 Interface
-- 🖥️ **Desktop App** - Clean, modern interface with CustomTkinter
-- 🔝 **Recording Overlay** - Minimal overlay shows recording status and waveform
-- 📚 **History** - Searchable history of all transcriptions
-- ⚙️ **Settings** - Customize hotkey, model, language, behavior
-- 🔔 **System Tray** - Runs in background, accessible from tray icon
+- **100% Local Processing** - All transcription happens on your machine
+- **Modern UI** - React + TypeScript + Tailwind CSS
+- **Real-time Waveform** - 60 FPS audio visualization
+- **Global Hotkey** - Ctrl+Space works from anywhere
+- **Multi-language** - Support for 99+ languages
+- **Searchable History** - SQLite database with full-text search
+- **Auto-paste** - Transcribed text automatically inserted
+- **Native Performance** - Tauri + Rust backend
 
-### 🛠️ Advanced
-- 📁 **SQLite Database** - All transcriptions stored locally with full-text search
-- 🎙️ **Device Selection** - Choose your preferred microphone
-- 🧠 **Model Options** - Tiny (fast) to Large (most accurate)
-- 🔄 **Cross-Platform** - Works on Windows, macOS, and Linux
+### Technology Stack
 
-## 🚀 Installation
+**Frontend:**
+- React 18
+- TypeScript
+- Tailwind CSS
+- Framer Motion (animations)
+- Zustand (state management)
+
+**Backend:**
+- Tauri 2.x (Rust)
+- Python 3.11+ (Flask bridge)
+- OpenAI Whisper (transcription)
+- SQLite (database)
+
+## Quick Start
 
 ### Prerequisites
 
-1. **Python 3.8+**
-   ```bash
-   python3 --version
-   ```
+- Python 3.11+
+- Node.js 18+
+- Rust (install from https://rustup.rs)
+- FFmpeg
 
-2. **ffmpeg** (required by Whisper)
-   
-   **macOS:**
-   ```bash
-   brew install ffmpeg
-   ```
-   
-   **Linux (Ubuntu/Debian):**
-   ```bash
-   sudo apt update && sudo apt install ffmpeg
-   ```
-   
-   **Windows:**
-   Download from [ffmpeg.org](https://ffmpeg.org/download.html) or use chocolatey:
-   ```bash
-   choco install ffmpeg
-   ```
+### Installation
 
-### Install VoiceSnap
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Warllam/voicesnap.git
-   cd voicesnap
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements_v2.txt
-   ```
-   
-   ⚠️ **Note:** First run will download the Whisper model (~150MB for "base" model)
-
-3. **Run VoiceSnap**
-   ```bash
-   python3 voicesnap_v2.py
-   ```
-
-## 📖 Usage
-
-### Quick Start
-
-1. **Launch VoiceSnap**
-   ```bash
-   python3 voicesnap_v2.py
-   ```
-
-2. **Wait for "Model loaded"** in the status bar
-
-3. **Press your hotkey** (default: `Ctrl+Space`)
-   - Recording overlay appears at the top of your screen
-   - Speak into your microphone
-   - Press hotkey again to stop
-
-4. **Transcription happens automatically**
-   - Text is transcribed
-   - Copied to clipboard
-   - Auto-pasted into your active window (if enabled)
-   - Saved to history
-
-### Interface Overview
-
-#### Main Window
-- **History Tab**: View, search, copy, or re-paste past transcriptions
-- **Settings Tab**: Configure microphone, model, language, hotkey, behavior
-- **About Tab**: Version info and features list
-
-#### Recording Overlay
-- Appears only when recording
-- Shows:
-  - 🔴 Recording indicator
-  - ⏱️ Duration counter
-  - 📊 Live audio waveform
-  - Always on top of other windows
-
-#### System Tray
-- **Show VoiceSnap**: Open main window
-- **Settings**: Quick access to settings
-- **Quit**: Exit application
-
-### Hotkey Modes
-
-**Toggle Mode** (default):
-- 1st press: Start recording
-- 2nd press: Stop recording + transcribe
-
-**Push-to-Talk Mode**:
-- Hold hotkey: Record
-- Release hotkey: Stop + transcribe
-
-Change mode in Settings → Hotkey Settings
-
-## ⚙️ Configuration
-
-### Whisper Models
-
-Choose speed vs. accuracy trade-off:
-
-| Model | Size | Speed | Accuracy | Best For |
-|-------|------|-------|----------|----------|
-| `tiny` | ~75 MB | ⚡⚡⚡ | ⭐⭐ | Quick notes, simple speech |
-| `base` | ~150 MB | ⚡⚡ | ⭐⭐⭐ | **Recommended** - Best balance |
-| `small` | ~500 MB | ⚡ | ⭐⭐⭐⭐ | Important transcriptions |
-| `medium` | ~1.5 GB | 🐌 | ⭐⭐⭐⭐⭐ | High accuracy needed |
-| `large` | ~3 GB | 🐌🐌 | ⭐⭐⭐⭐⭐⭐ | Professional use |
-
-### Languages
-
-VoiceSnap supports 99+ languages. Common ones:
-- 🇫🇷 French (`fr`)
-- 🇬🇧 English (`en`)
-- 🇪🇸 Spanish (`es`)
-- 🇩🇪 German (`de`)
-- 🇮🇹 Italian (`it`)
-- 🇵🇹 Portuguese (`pt`)
-- 🇯🇵 Japanese (`ja`)
-- 🇨🇳 Chinese (`zh`)
-- 🇷🇺 Russian (`ru`)
-- And many more...
-
-Select "Auto-detect" to let Whisper identify the language.
-
-### Custom Hotkey
-
-Change hotkey in Settings → Hotkey Settings (Coming soon: interactive hotkey capture)
-
-Edit config file manually: `~/.voicesnap/config.json`
-```json
-{
-  "hotkey": {
-    "modifiers": ["ctrl", "shift"],
-    "key": "space",
-    "toggle_mode": true
-  }
-}
-```
-
-## 🗂️ File Structure
-
-```
-~/.voicesnap/
-├── config.json          # User configuration
-├── data/
-│   └── transcriptions.db # SQLite database
-└── audio_cache/         # Saved recordings (optional)
-```
-
-## 🔧 Troubleshooting
-
-### "No microphone found"
-- Check system microphone permissions
-- On macOS: System Preferences → Security & Privacy → Microphone
-- Try selecting a different microphone in Settings
-
-### "ffmpeg not found"
-- Verify installation: `ffmpeg -version`
-- Make sure ffmpeg is in your PATH
-- Restart terminal/app after installing
-
-### "Auto-paste doesn't work"
-- On macOS: Grant Accessibility permissions
-  - System Preferences → Security & Privacy → Accessibility → Add Python/VoiceSnap
-- On Linux: Install `xdotool` for some environments
-- Text is always copied to clipboard even if paste fails
-
-### "Model download stuck"
-- Check internet connection (only needed for first run)
-- Whisper models are cached in `~/.cache/whisper/`
-- Manually download from [OpenAI Whisper releases](https://github.com/openai/whisper)
-
-### "App crashes on startup"
-- Check Python version: `python3 --version` (needs 3.8+)
-- Reinstall dependencies: `pip install -r requirements_v2.txt --force-reinstall`
-- Check console output for specific errors
-
-## 🏗️ Development
-
-### Project Structure
-```
-voicesnap/
-├── voicesnap_v2.py       # Main application entry point
-├── voicesnap.py          # Legacy CLI version (v1)
-├── src/
-│   ├── config.py         # Configuration management
-│   ├── database.py       # SQLite transcription history
-│   ├── core/
-│   │   ├── recorder.py   # Audio recording with waveform
-│   │   ├── transcriber.py # Whisper transcription
-│   │   └── hotkey_manager.py # Global hotkey handling
-│   └── ui/
-│       ├── main_window.py    # Main GUI window
-│       ├── overlay.py        # Recording overlay
-│       └── system_tray.py    # System tray icon
-├── assets/
-│   └── icon.png          # Application icon
-├── requirements_v2.txt   # Python dependencies
-└── README.md             # This file
-```
-
-### Running from Source
 ```bash
+# Clone the repository
 git clone https://github.com/Warllam/voicesnap.git
 cd voicesnap
-pip install -r requirements_v2.txt
-python3 voicesnap_v2.py
+
+# Checkout v3-tauri branch
+git checkout v3-tauri
+
+# Install Python dependencies
+cd python
+pip install -r requirements.txt
+cd ..
+
+# Install Node dependencies
+npm install
 ```
 
-### Building Standalone Executable
-(Coming soon: PyInstaller scripts for .exe and .app)
+### Running in Development
 
-## 🗺️ Roadmap
+```bash
+# Start the development environment
+./start.sh
+```
 
-### v2.1 (Planned)
-- [ ] Interactive hotkey capture in settings
-- [ ] Export history to CSV/JSON
-- [ ] Custom themes and colors
-- [ ] Recording duration limit setting
-- [ ] Pause/resume recording
+Or manually in two terminals:
 
-### v2.5 (Future)
-- [ ] Standalone executables (.exe for Windows, .app for macOS)
-- [ ] Audio playback in history
-- [ ] Multi-language UI
-- [ ] Plugins system for post-processing
+```bash
+# Terminal 1: Python backend
+cd python
+python server.py
 
-### v3.0 (Ideas)
-- [ ] LLM integration for text formatting (Ollama)
-- [ ] Prompt templates (professional, casual, code comments)
-- [ ] Voice commands ("insert code", "format email")
-- [ ] Cloud sync (optional, encrypted)
+# Terminal 2: Tauri frontend
+npm run tauri:dev
+```
 
-## 🤝 Contributing
+### Building for Production
 
-Contributions welcome! Areas that need help:
-- 🐛 Bug fixes
-- 🌍 Translations
-- 📚 Documentation
-- ✨ Feature implementations
-- 🧪 Testing on different platforms
+```bash
+npm run tauri:build
+```
 
-## 📄 License
+Builds are created in `src-tauri/target/release/bundle/`:
+- Windows: `.exe` and `.msi`
+- macOS: `.dmg` and `.app`
+- Linux: `.deb` and `.AppImage`
 
-MIT License - See [LICENSE](LICENSE) for details.
+## Documentation
 
-## 🙏 Acknowledgments
+- **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes
+- **[Technical Documentation](README_TAURI.md)** - Complete technical reference
+- **[Migration Guide](MIGRATION.md)** - Upgrading from v2.x
+- **[Changelog](CHANGELOG.md)** - Version history and release notes
 
-- **OpenAI Whisper** - Amazing open-source speech recognition
-- **CustomTkinter** - Modern UI framework
-- **SuperWhisper** - Inspiration for the UX
+## Usage
 
-## 💬 Support
+1. Launch the application
+2. Press `Ctrl+Space` to start recording
+3. Speak into your microphone
+4. Press `Ctrl+Space` again to stop
+5. Transcription is automatically copied and pasted
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/Warllam/voicesnap/issues)
-- 💡 **Discussions**: [GitHub Discussions](https://github.com/Warllam/voicesnap/discussions)
-- ⭐ **Star the repo** if you find it useful!
+## Configuration
+
+Configuration file: `~/.voicesnap/config.json`
+
+Key settings:
+- Audio device selection
+- Whisper model (tiny/base/small/medium/large)
+- Language preference
+- Auto-paste behavior
+- Theme (dark/light)
+
+## Architecture
+
+```
+Frontend (React/Tauri) <-> HTTP Bridge (port 8765) <-> Python Backend (Whisper)
+```
+
+- **Frontend**: Modern web UI with Tauri
+- **Bridge**: Flask HTTP server for IPC
+- **Backend**: Python with Whisper AI for transcription
+
+## Performance
+
+- Bundle size: ~25 MB
+- Startup time: ~2 seconds
+- Memory usage: ~150 MB idle, ~500 MB during transcription
+- UI framerate: 60 FPS
+- Transcription speed: Depends on Whisper model (base: ~2x realtime)
+
+## Troubleshooting
+
+### Python server won't start
+- Check Python version: `python --version` (need 3.11+)
+- Install dependencies: `pip install -r python/requirements.txt`
+- Check port 8765 is free: `lsof -i :8765`
+
+### Whisper model not loading
+- First run downloads model automatically (~150 MB for 'base')
+- Models stored in `~/.cache/whisper/`
+- Check internet connection and disk space
+
+### Audio not recording
+- Check microphone permissions in system settings
+- Test device in Settings page
+- Try different audio device
+
+### Build fails
+- Install system dependencies (Linux):
+  ```bash
+  sudo apt install libwebkit2gtk-4.1-dev libappindicator3-dev \
+    librsvg2-dev patchelf
+  ```
+- Clear build cache: `rm -rf node_modules src-tauri/target && npm install`
+
+## Roadmap
+
+See [CHANGELOG.md](CHANGELOG.md) for planned features.
+
+### v3.1 (Next Release)
+- Light theme support
+- Custom hotkey configuration
+- Export functionality (JSON, CSV, TXT)
+- Voice activity detection
+- System tray enhancements
+
+## Contributing
+
+This is a personal project, but contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+MIT License - See [LICENSE](LICENSE) file for details
+
+## Credits
+
+- **OpenAI Whisper** - Speech recognition model
+- **Tauri** - Desktop application framework
+- **React** - UI framework
+- Design inspiration: Discord, Linear, Raycast
+
+## Support
+
+- **GitHub Issues**: https://github.com/Warllam/voicesnap/issues
+- **Documentation**: See README_TAURI.md
+- **Author**: Warllam
 
 ---
 
-Made with ❤️ by [Warllam](https://github.com/Warllam)
-
-**Privacy First** • **100% Local** • **Open Source**
+**Made with modern web technologies for a native desktop experience**
