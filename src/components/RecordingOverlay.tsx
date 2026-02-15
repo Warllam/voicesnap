@@ -89,17 +89,17 @@ export default function RecordingOverlay() {
     }
   };
 
-  // Global hotkey listener (Ctrl+Space)
+  // Global hotkey listener (Ctrl+Space via Tauri)
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.code === 'Space') {
-        e.preventDefault();
+    import('@tauri-apps/api/event').then(({ listen }) => {
+      const unlisten = listen('hotkey-pressed', () => {
         handleToggleRecording();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+      });
+      
+      return () => {
+        unlisten.then(fn => fn());
+      };
+    });
   }, [isRecording]);
 
   return (

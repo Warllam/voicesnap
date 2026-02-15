@@ -239,6 +239,29 @@ fn main() {
             python_server_running: Mutex::new(false),
         })
         .plugin(tauri_plugin_shell::init())
+        .setup(|app| {
+            #[cfg(not(any(target_os = "android", target_os = "ios")))]
+            {
+                use tauri_plugin_global_shortcut::{Code, Modifiers, ShortcutState};
+                
+                app.handle().plugin(
+                    tauri_plugin_global_shortcut::Builder::new()
+                        .with_handler(|app, shortcut, event| {
+                            if event.state == ShortcutState::Pressed {
+                                println!("Global hotkey pressed: {:?}", shortcut);
+                                // Emit event to frontend
+                                app.emit("hotkey-pressed", ()).ok();
+                            }
+                        })
+                        .build(),
+                )?;
+                
+                // Register Ctrl+Space
+                app.global_shortcut().register("CommandOrControl+Space")?;
+            }
+            
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             start_python_server,
             check_server_health,
