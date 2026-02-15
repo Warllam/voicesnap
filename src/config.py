@@ -34,8 +34,9 @@ class Config:
             "run_on_startup": False
         },
         "ui": {
-            "theme": "dark",       # dark or light
-            "overlay_position": "top",  # top, bottom
+            "theme": "light",      # dark or light (v2.1 defaults to light)
+            "overlay_position": "top",  # top, center
+            "overlay_style": "floating",  # floating or bar (v2.1 Apple style)
             "overlay_height": 80,
             "show_notifications": True
         }
