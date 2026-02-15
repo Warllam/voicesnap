@@ -1,7 +1,7 @@
 {
   "productName": "VoiceSnap",
   "version": "3.0.0",
-  "identifier": "com.voicesnap.app",
+  "identifier": "com.voicesnap.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
