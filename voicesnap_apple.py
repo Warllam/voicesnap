@@ -19,7 +19,7 @@ from src.core.recorder import AudioRecorder
 from src.core.transcriber import Transcriber
 from src.core.hotkey_manager import HotkeyManager
 from src.ui.main_window_apple import MainWindowApple
-from src.ui.overlay_apple import RecordingOverlayApple
+from src.ui.overlay_modern import RecordingOverlayModern
 from src.ui.system_tray import SystemTray
 
 import pyperclip
@@ -66,7 +66,7 @@ class VoiceSnapApp:
         self._setup_hotkey()
         print("✓ Hotkey manager initialized")
         
-        self.overlay: RecordingOverlayApple = None
+        self.overlay: RecordingOverlayModern = None
         self.system_tray = SystemTray("VoiceSnap")
         print("✓ System tray initialized")
         
@@ -171,11 +171,11 @@ class VoiceSnapApp:
         self.main_window.set_status("● Recording...")
         self.system_tray.update_icon(recording=True)
         
-        # Show overlay (floating style for Apple aesthetic)
+        # Show overlay (modern style with stunning visuals)
         overlay_style = self.config.get("ui.overlay_style", "floating")
-        overlay_position = self.config.get("ui.overlay_position", "top")
+        overlay_position = self.config.get("ui.overlay_position", "center")
         
-        self.overlay = RecordingOverlayApple(
+        self.overlay = RecordingOverlayModern(
             position=overlay_position,
             style=overlay_style
         )

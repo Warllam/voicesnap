@@ -7,18 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] - 2025-02-15
 
-### 🍎 Apple-Inspired Redesign - Professional Polish
+### 🎨 Modern Dark Redesign - Stunning Visuals
 
-Complete UI/UX overhaul with Apple's design language. Ultra-clean, minimal, and elegant.
+Complete UI/UX overhaul with modern, dynamic design language. Dark mode by default with beautiful animations.
 
 ### Added
 
 #### Visual Design
-- **Apple Design System Colors**
-  - Light theme: Pure white (#FFFFFF), subtle grays (#F5F5F7)
-  - Dark theme: Deep blacks (#1C1C1E), warm grays
-  - Accent: Apple Blue (#007AFF)
-  - System fonts: SF Pro Display/Text (macOS), Segoe UI (Windows)
+- **Modern Design System Colors**
+  - Dark theme (default): Modern blue-gray (#1A1B26), rich accents
+  - Light theme: Soft whites (#F7F9FC), clean contrast
+  - Accent: Modern Blue (#7AA2F7) with smooth hover states
+  - Fonts: Segoe UI (clean, cross-platform)
   
 - **Single-Page Layout** (No Tabs!)
   - Vertical scrolling layout
@@ -40,23 +40,25 @@ Complete UI/UX overhaul with Apple's design language. Ultra-clean, minimal, and 
   - Integrated search icon
   - Smooth interactions
 
-#### Recording Overlay
-- **Two Styles Available**
-  - `floating`: Centered card with glassmorphism effect (320x100px)
-  - `bar`: Full-width minimal bar at top/center
+#### Recording Overlay - The Star of the Show! ⭐
+- **Three Styles Available**
+  - `floating`: Centered card with stunning gradient (400x120px)
+  - `minimal`: Compact floating card (300x80px)
+  - `bar`: Full-width with modern visuals
   
-- **Apple-Style Elements**
-  - Pulsing recording dot (subtle animation)
-  - Clean timer display (MM:SS format)
-  - Minimal waveform visualization (bar style)
-  - Translucent background with blur effect
-  - Soft rounded corners
+- **Stunning Visual Effects**
+  - Multi-layer pulsing glow around recording dot
+  - Gradient waveform (purple → cyan)
+  - Smooth gradient background
+  - Modern color scheme with glows
+  - Dynamic animations at 40 FPS
   
-- **Smooth Animations**
-  - 30 FPS fluid animations
-  - Pulsing dot with sine wave
-  - Fade in/out transitions
-  - Responsive to audio levels
+- **Premium Animations**
+  - 40 FPS silky-smooth rendering
+  - Multi-layer pulse effect with glow
+  - Gradient color transitions
+  - Responsive waveform bars
+  - Subtle background gradients
 
 #### Settings UI
 - **Collapsible Sections** (Accordion Style)

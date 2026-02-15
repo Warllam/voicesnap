@@ -9,30 +9,30 @@ import math
 # Apple Design System Colors
 COLORS_LIGHT = {
     "bg_primary": "#FFFFFF",
-    "bg_secondary": "#F5F5F7",
-    "bg_tertiary": "#E8E8ED",
-    "text_primary": "#1D1D1F",
-    "text_secondary": "#86868B",
-    "accent": "#007AFF",
-    "accent_hover": "#0051D5",
-    "success": "#34C759",
-    "danger": "#FF3B30",
-    "border": "#D2D2D7",
-    "card_shadow": "#00000008"
+    "bg_secondary": "#F7F9FC",  # Soft blue-white
+    "bg_tertiary": "#E8EDF5",  # Light blue-gray
+    "text_primary": "#1A1B26",  # Dark blue-gray
+    "text_secondary": "#6B7280",
+    "accent": "#7AA2F7",  # Modern blue (matches dark theme)
+    "accent_hover": "#6592E6",
+    "success": "#9ECE6A",
+    "danger": "#F7768E",
+    "border": "#E5E7EB",
+    "card_shadow": "#00000010"
 }
 
 COLORS_DARK = {
-    "bg_primary": "#1C1C1E",
-    "bg_secondary": "#2C2C2E",
-    "bg_tertiary": "#3A3A3C",
-    "text_primary": "#FFFFFF",
-    "text_secondary": "#98989D",
-    "accent": "#0A84FF",
-    "accent_hover": "#409CFF",
-    "success": "#30D158",
-    "danger": "#FF453A",
-    "border": "#38383A",
-    "card_shadow": "#00000020"
+    "bg_primary": "#1A1B26",  # Modern dark blue-gray
+    "bg_secondary": "#24283B",  # Slightly lighter
+    "bg_tertiary": "#414868",  # Accent backgrounds
+    "text_primary": "#C0CAF5",  # Soft white-blue
+    "text_secondary": "#9AA5CE",  # Muted blue-gray
+    "accent": "#7AA2F7",  # Modern blue
+    "accent_hover": "#89B4FA",
+    "success": "#9ECE6A",  # Modern green
+    "danger": "#F7768E",  # Soft red
+    "border": "#32344A",  # Subtle borders
+    "card_shadow": "#00000030"  # Deeper shadows
 }
 
 
@@ -243,11 +243,11 @@ class MainWindowApple:
     
     def __init__(self, title: str = "VoiceSnap"):
         """Initialize main window"""
-        self.theme = "light"  # Start with light theme
-        self.colors = COLORS_LIGHT
+        self.theme = "dark"  # Start with dark theme
+        self.colors = COLORS_DARK
         
         # Configure CustomTkinter
-        ctk.set_appearance_mode("light")
+        ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
         
         # Create main window
