@@ -3,7 +3,10 @@
 
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
-use tauri::State;
+use tauri::Emitter;
+
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
+use tauri_plugin_global_shortcut::GlobalShortcutExt;
 
 // Python backend URL
 const PYTHON_BACKEND: &str = "http://localhost:8765";
