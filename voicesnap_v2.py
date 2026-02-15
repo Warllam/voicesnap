@@ -57,13 +57,14 @@ class VoiceSnapApp:
         )
         print("✓ Transcriber initialized")
         
+        # Initialize UI components FIRST (needed by hotkey setup)
+        self.main_window = MainWindow("VoiceSnap v2")
+        print("✓ Main window created")
+        
+        # Then setup hotkey (needs main_window)
         self.hotkey_manager = HotkeyManager()
         self._setup_hotkey()
         print("✓ Hotkey manager initialized")
-        
-        # Initialize UI components
-        self.main_window = MainWindow("VoiceSnap v2")
-        print("✓ Main window created")
         
         self.overlay: RecordingOverlay = None
         self.system_tray = SystemTray("VoiceSnap")
