@@ -12,6 +12,7 @@ use tauri_plugin_global_shortcut::GlobalShortcutExt;
 const PYTHON_BACKEND: &str = "http://localhost:8765";
 
 // App state
+#[allow(dead_code)]
 struct AppState {
     python_server_running: Mutex<bool>,
 }
@@ -245,15 +246,25 @@ fn main() {
         .setup(|app| {
             #[cfg(not(any(target_os = "android", target_os = "ios")))]
             {
-                use tauri_plugin_global_shortcut::{Code, Modifiers, ShortcutState};
+                use tauri_plugin_global_shortcut::ShortcutState;
+                
+                let app_handle = app.handle().clone();
                 
                 app.handle().plugin(
                     tauri_plugin_global_shortcut::Builder::new()
-                        .with_handler(|app, shortcut, event| {
+                        .with_handler(move |_app, shortcut, event| {
                             if event.state == ShortcutState::Pressed {
                                 println!("Global hotkey pressed: {:?}", shortcut);
-                                // Emit event to frontend
-                                app.emit("hotkey-pressed", ()).ok();
+                                
+                                // Emit to all webview windows
+                                println!("Emitting hotkey-pressed event to frontend...");
+                                app_handle.webview_windows().values().for_each(|window| {
+                                    if let Err(e) = window.emit("hotkey-pressed", ()) {
+                                        eprintln!("Failed to emit to window: {}", e);
+                                    } else {
+                                        println!("Event emitted to window successfully!");
+                                    }
+                                });
                             }
                         })
                         .build(),
