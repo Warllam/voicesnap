@@ -20,12 +20,25 @@ from src.database import TranscriptionDB
 from src.config import Config
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 # Flask app
 app = Flask(__name__)
 CORS(app)  # Enable CORS for Tauri
+
+# Request logging middleware
+@app.before_request
+def log_request():
+    logger.debug(f"📨 {request.method} {request.path} from {request.remote_addr}")
+
+@app.after_request
+def log_response(response):
+    logger.debug(f"📤 {request.method} {request.path} -> {response.status_code}")
+    return response
 
 # Global instances
 config: Optional[Config] = None
@@ -42,11 +55,18 @@ def init_app():
     """Initialize application components"""
     global config, recorder, transcriber, db
     
+    logger.info("=" * 60)
+    logger.info("🎙️  VoiceSnap Backend Server - Initializing")
+    logger.info("=" * 60)
+    
     # Load config
+    logger.info("📋 Loading configuration...")
     config = Config()
+    logger.debug(f"📁 Config directory: {config.config_dir}")
     
     # Initialize database
     db_path = config.get_data_dir() / "transcriptions.db"
+    logger.info(f"💾 Initializing database: {db_path}")
     db = TranscriptionDB(str(db_path))
     
     # Initialize recorder
@@ -54,6 +74,12 @@ def init_app():
     channels = config.get("audio.channels", 1)
     device_index = config.get("audio.device_index")
     max_duration = config.get("audio.max_duration", 120)
+    
+    logger.info(f"🎙️  Initializing audio recorder...")
+    logger.debug(f"   Sample rate: {sample_rate} Hz")
+    logger.debug(f"   Channels: {channels}")
+    logger.debug(f"   Device index: {device_index}")
+    logger.debug(f"   Max duration: {max_duration}s")
     
     recorder = AudioRecorder(
         sample_rate=sample_rate,
@@ -71,25 +97,32 @@ def init_app():
             waveform_data_buffer.pop(0)
     
     recorder.set_waveform_callback(waveform_callback)
+    logger.debug("✅ Waveform callback registered")
     
     # Initialize transcriber
     model_name = config.get("whisper.model", "base")
     language = config.get("whisper.language", "fr")
+    
+    logger.info(f"🤖 Initializing Whisper transcriber...")
+    logger.debug(f"   Model: {model_name}")
+    logger.debug(f"   Language: {language}")
     
     transcriber = Transcriber(model_name=model_name, language=language)
     
     # Load Whisper model in background
     def load_model():
         try:
-            logger.info(f"Loading Whisper model '{model_name}'...")
+            logger.info(f"⏬ Loading Whisper model '{model_name}' (this may take a while)...")
             transcriber.load_model()
-            logger.info("Whisper model loaded successfully")
+            logger.info("✅ Whisper model loaded successfully!")
         except Exception as e:
-            logger.error(f"Failed to load Whisper model: {e}")
+            logger.error(f"❌ Failed to load Whisper model: {e}", exc_info=True)
     
     threading.Thread(target=load_model, daemon=True).start()
     
-    logger.info("VoiceSnap server initialized")
+    logger.info("=" * 60)
+    logger.info("✅ VoiceSnap server initialized successfully!")
+    logger.info("=" * 60)
 
 # API Routes
 
@@ -110,18 +143,24 @@ def start_recording():
     """Start audio recording"""
     global is_recording, waveform_data_buffer
     
+    logger.info("📥 START RECORDING request received")
+    
     try:
         if is_recording:
+            logger.warning("⚠️ Already recording!")
             return jsonify({
                 "success": False,
                 "error": "Already recording"
             }), 400
         
+        logger.debug("🔄 Clearing waveform buffer...")
         waveform_data_buffer = []
+        
+        logger.debug("🎙️ Starting recorder...")
         recorder.start_recording()
         is_recording = True
         
-        logger.info("Recording started")
+        logger.info("✅ Recording started successfully")
         
         return jsonify({
             "success": True,
@@ -129,7 +168,7 @@ def start_recording():
         })
     
     except Exception as e:
-        logger.error(f"Failed to start recording: {e}")
+        logger.error(f"❌ Failed to start recording: {e}", exc_info=True)
         return jsonify({
             "success": False,
             "error": str(e)
@@ -140,36 +179,46 @@ def stop_recording():
     """Stop recording and transcribe"""
     global is_recording, current_audio
     
+    logger.info("📥 STOP RECORDING request received")
+    
     try:
         if not is_recording:
+            logger.warning("⚠️ Not recording!")
             return jsonify({
                 "success": False,
                 "error": "Not recording"
             }), 400
         
         # Stop recording
+        logger.debug("🛑 Stopping recorder...")
         audio = recorder.stop_recording()
         is_recording = False
         
         if audio is None or len(audio) == 0:
+            logger.error("❌ No audio data captured!")
             return jsonify({
                 "success": False,
                 "error": "No audio data captured"
             }), 400
         
-        logger.info(f"Recording stopped, duration: {recorder.get_duration():.2f}s")
+        duration = recorder.get_duration()
+        audio_length = len(audio)
+        logger.info(f"✅ Recording stopped - Duration: {duration:.2f}s, Samples: {audio_length}")
         
         # Check if model is loaded
         if transcriber.model is None:
+            logger.warning("⚠️ Whisper model not loaded yet!")
             return jsonify({
                 "success": False,
                 "error": "Whisper model not loaded yet. Please wait..."
             }), 503
         
         # Transcribe
-        logger.info("Transcribing audio...")
+        logger.info("🔄 Starting transcription...")
         save_audio = config.get("behavior.save_audio_files", False)
         audio_cache_dir = config.get_audio_cache_dir() if save_audio else None
+        
+        logger.debug(f"📝 Transcription params - save_audio: {save_audio}, cache_dir: {audio_cache_dir}")
         
         result = transcriber.transcribe_audio(
             audio,
@@ -178,9 +227,12 @@ def stop_recording():
             audio_cache_dir=audio_cache_dir
         )
         
-        logger.info(f"Transcription complete: {result['text'][:50]}...")
+        logger.info(f"✅ Transcription complete!")
+        logger.info(f"📝 Text (preview): {result['text'][:100]}...")
+        logger.info(f"🌍 Language: {result['language']}")
         
         # Save to database
+        logger.debug("💾 Saving to database...")
         transcription_id = db.add_transcription(
             text=result['text'],
             language=config.get("whisper.language"),
@@ -191,26 +243,31 @@ def stop_recording():
             pasted=False
         )
         
+        logger.info(f"✅ Saved to DB with ID: {transcription_id}")
+        
         # Auto-paste if enabled
         auto_paste = config.get("behavior.auto_paste", True)
         if auto_paste:
-            # This will be handled by Tauri frontend
-            pass
+            logger.debug("📋 Auto-paste enabled (handled by frontend)")
+        
+        response_data = {
+            "id": transcription_id,
+            "text": result['text'],
+            "language": result['language'],
+            "duration": result['duration'],
+            "audio_file": result['audio_file']
+        }
+        
+        logger.info(f"📤 Sending response with transcription ID {transcription_id}")
         
         return jsonify({
             "success": True,
-            "data": {
-                "id": transcription_id,
-                "text": result['text'],
-                "language": result['language'],
-                "duration": result['duration'],
-                "audio_file": result['audio_file']
-            }
+            "data": response_data
         })
     
     except Exception as e:
         is_recording = False
-        logger.error(f"Failed to stop recording/transcribe: {e}")
+        logger.error(f"❌ Failed to stop recording/transcribe: {e}", exc_info=True)
         return jsonify({
             "success": False,
             "error": str(e)
@@ -221,12 +278,19 @@ def get_waveform():
     """Get current waveform data for visualization"""
     global waveform_data_buffer
     
+    duration = recorder.get_duration() if is_recording else 0
+    buffer_size = len(waveform_data_buffer)
+    
+    # Log only every 10th request to avoid spam
+    if buffer_size % 10 == 0:
+        logger.debug(f"📊 Waveform request - Recording: {is_recording}, Duration: {duration:.2f}s, Buffer: {buffer_size} chunks")
+    
     return jsonify({
         "success": True,
         "data": {
             "waveform": waveform_data_buffer,
             "is_recording": is_recording,
-            "duration": recorder.get_duration() if is_recording else 0
+            "duration": duration
         }
     })
 
@@ -365,11 +429,23 @@ def flatten_dict(d: Dict, parent_key: str = '', sep: str = '.') -> Dict:
 
 def main():
     """Start the server"""
+    print("\n" + "=" * 60)
+    print("🎙️  VoiceSnap Backend Server")
+    print("=" * 60 + "\n")
+    
     init_app()
     
     # Run Flask server
     port = int(os.environ.get('PORT', 8765))
-    logger.info(f"Starting VoiceSnap server on http://localhost:{port}")
+    
+    print("\n" + "=" * 60)
+    print(f"🚀 Server starting on http://localhost:{port}")
+    print("=" * 60)
+    print(f"\n📌 Health check: http://localhost:{port}/health")
+    print(f"📌 API base URL: http://localhost:{port}/api")
+    print("\n🔍 Logging level: DEBUG (verbose)")
+    print("\n⏸️  Press Ctrl+C to stop\n")
+    print("=" * 60 + "\n")
     
     app.run(
         host='0.0.0.0',
