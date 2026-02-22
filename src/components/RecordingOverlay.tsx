@@ -45,16 +45,21 @@ export default function RecordingOverlay() {
   }, [isRecording]);
 
   const handleToggleRecording = async () => {
+    console.log('[RecordingOverlay] handleToggleRecording called, isRecording:', isRecording);
+    
     try {
       if (isRecording) {
+        console.log('[RecordingOverlay] Stopping recording...');
         // Stop recording
         setIsTranscribing(true);
         const result = await api.stopRecording();
+        console.log('[RecordingOverlay] Stop recording result:', result);
         setIsRecording(false);
         setIsTranscribing(false);
 
         // Add transcription to list
         if (result.text) {
+          console.log('[RecordingOverlay] Adding transcription to store');
           addTranscription({
             id: result.id || Date.now(),
             text: result.text,
@@ -70,19 +75,23 @@ export default function RecordingOverlay() {
           });
 
           // Copy to clipboard
+          console.log('[RecordingOverlay] Copying to clipboard');
           await copyToClipboard(result.text);
 
           // Show success notification
           // TODO: Add toast notification
+          console.log('[RecordingOverlay] ✅ Transcription complete!');
         }
       } else {
+        console.log('[RecordingOverlay] Starting recording...');
         // Start recording
         await api.startRecording();
+        console.log('[RecordingOverlay] Recording started successfully');
         setIsRecording(true);
         setAudioData([]);
       }
     } catch (error: any) {
-      console.error('Recording error:', error);
+      console.error('[RecordingOverlay] ❌ Recording error:', error);
       setIsRecording(false);
       setIsTranscribing(false);
       setError(error.message || 'Failed to toggle recording');
@@ -91,16 +100,20 @@ export default function RecordingOverlay() {
 
   // Global hotkey listener (Ctrl+Space via Tauri)
   useEffect(() => {
+    console.log('[RecordingOverlay] Setting up hotkey listener');
+    
     import('@tauri-apps/api/event').then(({ listen }) => {
       const unlisten = listen('hotkey-pressed', () => {
+        console.log('[RecordingOverlay] 🔥 hotkey-pressed event received!');
         handleToggleRecording();
       });
       
       return () => {
+        console.log('[RecordingOverlay] Cleaning up hotkey listener');
         unlisten.then(fn => fn());
       };
     });
-  }, [isRecording]);
+  }, [isRecording, handleToggleRecording]);
 
   return (
     <AnimatePresence>

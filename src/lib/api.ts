@@ -70,11 +70,17 @@ export const api = {
   },
 
   startRecording: async (): Promise<boolean> => {
-    return await invoke<boolean>("start_recording");
+    console.log('[API] 📥 Calling Tauri command: start_recording');
+    const result = await invoke<boolean>("start_recording");
+    console.log('[API] ✅ start_recording response:', result);
+    return result;
   },
 
   stopRecording: async (): Promise<TranscriptionResult> => {
-    return await invoke<TranscriptionResult>("stop_recording");
+    console.log('[API] 📥 Calling Tauri command: stop_recording');
+    const result = await invoke<TranscriptionResult>("stop_recording");
+    console.log('[API] ✅ stop_recording response:', result);
+    return result;
   },
 
   getAudioDevices: async (): Promise<AudioDevice[]> => {
