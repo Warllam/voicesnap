@@ -2,6 +2,7 @@
   "productName": "VoiceSnap",
   "version": "3.0.0",
   "identifier": "com.voicesnap.desktop",
+  "capabilities": ["default"],
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -9,6 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "VoiceSnap",
