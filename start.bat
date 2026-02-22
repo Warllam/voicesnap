@@ -42,22 +42,27 @@ if not exist "node_modules\" (
 
 REM Démarrer le backend Python en arrière-plan
 echo [3/3] Demarrage du backend Python...
-start "VoiceSnap Backend" /min python python\server.py
+start "VoiceSnap Backend" python python\server.py
 
-REM Attendre que le serveur soit prêt
+REM Attendre que le serveur soit prêt (jusqu'à 15 secondes)
 echo Attente du serveur backend...
-timeout /t 3 /nobreak >nul
-
-REM Vérifier que le backend tourne
+set /a count=0
+:wait_backend
+timeout /t 1 /nobreak >nul
 curl -s http://localhost:8765/health >nul 2>&1
-if errorlevel 1 (
-    echo [AVERTISSEMENT] Le backend met du temps a demarrer...
-    echo Attendez quelques secondes puis rechargez l'interface si necessaire
-    timeout /t 5 /nobreak >nul
+if not errorlevel 1 (
+    echo Backend demarre avec succes !
+    echo.
+    goto backend_ready
 )
+set /a count+=1
+if %count% lss 15 goto wait_backend
 
-echo Backend demarre !
+echo [AVERTISSEMENT] Le backend met du temps a demarrer...
+echo L'application va quand meme demarrer.
 echo.
+
+:backend_ready
 
 REM Démarrer l'interface Tauri
 echo ====================================

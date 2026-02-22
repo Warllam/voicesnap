@@ -119,38 +119,38 @@ export default function RecordingOverlay() {
     <AnimatePresence>
       {(isRecording || isTranscribing) && (
         <motion.div
-          initial={{ opacity: 0, y: -50 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -50 }}
+          exit={{ opacity: 0, y: -30 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed top-12 left-1/2 -translate-x-1/2 z-50"
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-50"
         >
-          <div className="glass rounded-2xl px-8 py-6 shadow-2xl glow min-w-[600px]">
-            <div className="flex items-center gap-6">
+          <div className="glass rounded-2xl px-10 py-5 shadow-2xl glow min-w-[700px]">
+            <div className="flex items-center gap-8">
               {/* Recording indicator */}
               <div className="flex items-center gap-3">
                 {isTranscribing ? (
-                  <Loader2 className="w-6 h-6 text-accent animate-spin" />
+                  <Loader2 className="w-7 h-7 text-accent animate-spin" />
                 ) : (
                   <motion.div
-                    className="w-3 h-3 rounded-full bg-red-500"
-                    animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="w-4 h-4 rounded-full bg-red-500"
+                    animate={{ opacity: [1, 0.4, 1] }}
+                    transition={{ duration: 1.2, repeat: Infinity }}
                   />
                 )}
                 
-                <span className="text-lg font-medium text-text">
+                <span className="text-xl font-semibold text-text">
                   {isTranscribing ? 'Transcribing...' : 'Recording'}
                 </span>
               </div>
 
               {/* Timer */}
-              <div className="text-2xl font-mono text-accent font-bold">
+              <div className="text-3xl font-mono text-accent font-bold tracking-wider">
                 {formatDuration(recordingDuration)}
               </div>
 
-              {/* Waveform */}
-              <div className="flex-1 h-16">
+              {/* Waveform - PLUS GRAND */}
+              <div className="flex-1 h-20">
                 <Waveform
                   audioData={audioData}
                   isRecording={isRecording}
